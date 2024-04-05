@@ -61,6 +61,8 @@ Image &Image::operator=(const Image &other) {
         }
     }
     if (this != &other) {
+        // some bug in this code when the size of the two images are different
+        // TODO
         if((*this).size().area() != other.size().area()) {
             release();
             m_size = other.m_size;
@@ -98,17 +100,40 @@ Image &Image::operator=(const Image &other) {
 // // Pixel-wise addition and subtraction of two images
 // // The two images must have the same size otherwise the operation will fail
 // // (exception thrown)
-Image Image::operator+(const Image &i) {
-
-    return Image();
+Image Image::operator+(const Image &other) {
+    if(m_size != other.size()) {
+        throw std::invalid_argument("The two images must have the same size");
+    }
+    Image result = Image(m_size);
+    for(uint i = 0; i < m_size.height(); i++) {
+        for(uint j = 0; j < m_size.width(); j++) {
+            result.at(i, j) = m_data[i][j] + other.m_data[i][j];
+        }
+    }
+    return result;
 }
 
-Image Image::operator-(const Image &i) {
-    return Image();
+Image Image::operator-(const Image &other) {
+    if(m_size != other.size()) {
+        throw std::invalid_argument("The two images must have the same size");
+    }
+    Image result = Image(m_size);
+    for(uint i = 0; i < m_size.height(); i++) {
+        for(uint j = 0; j < m_size.width(); j++) {
+            result.at(i, j) = m_data[i][j] - other.m_data[i][j];
+        }
+    }
+    return result;
 }
 
 Image Image::operator*(double s) {
-    return Image();
+    Image result = Image(m_size);
+    for(uint i = 0; i < m_size.height(); i++) {
+        for(uint j = 0; j < m_size.width(); j++) {
+            result.at(i, j) = static_cast<unsigned char>(m_data[i][j] * s);
+        }
+    }
+    return result;
 }
 //
 // bool Image::getROI(Image &roiImg, Rectangle roiRect) {
@@ -129,11 +154,11 @@ bool Image::isEmpty() const {
 
 // Access a pixel value at a specific location using a Point object
 unsigned char &Image::at(Point pt) {
-    return m_data[pt.y()][pt.x()];
+    return m_data[pt.x()][pt.y()];
 }
 // maybe not
 unsigned char &Image::at(unsigned int x, unsigned int y) {
-    return m_data[y][x];
+    return m_data[x][y];
 }
 
 // Get the whole row of the image

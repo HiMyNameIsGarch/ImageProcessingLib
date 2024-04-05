@@ -4,9 +4,11 @@
 #include <iostream>
 
 int main() {
-    Image img = Image(Size(2,2));
+    Image img = Image();
     std::cout << img;
-    img = Image::zeros(10, 10);
+    img = Image::ones(10, 10);
     std::cout << img;
+    img = img * 3;
+    std:: cout << img;
     return 0;
 }
