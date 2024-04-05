@@ -10,8 +10,8 @@ int main() {
     // std::cout << img;
     // img = img * 3;
     // std:: cout << img;
-    bool a = img.load("./samples/load/small.pgm");
-    std::cout << a << std::endl;
+    img.load("./samples/load/small.pgm");
     std::cout << img;
+    img.save("./samples/saved/small.pgm");
     return 0;
 }

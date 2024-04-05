@@ -3,7 +3,11 @@
 #include <fstream>
 #include <limits>
 
+#define MAX_CHAR 255
 #define MAGIC_NUMBER "P2"
+#define PGM_EXT "pgm"
+#define PGM_COMMENT '#'
+#define EXTENTION_LENGTH 3
 
 // Default constructor
 // Initialize the image with an empty size
@@ -90,6 +94,12 @@ Image &Image::operator=(const Image &other) {
 // Return true if the image was loaded successfully
 // Return false if the image could not be loaded
 bool Image::load(std::string imagePath) {
+    std::string extension = imagePath.substr(imagePath.length() - EXTENTION_LENGTH);
+    if (extension != PGM_EXT) {
+        std::cerr << "Error: Invalid file extension!" << std::endl;
+        return false;
+    }
+
     std::ifstream file(imagePath);
     if (!file.is_open()) {
         std::cerr << "Error opening the file!" << std::endl;
@@ -105,7 +115,7 @@ bool Image::load(std::string imagePath) {
     }
 
     // Ignore comments
-    while (file.peek() == '#') {
+    while (file.peek() == PGM_COMMENT) {
         file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 
@@ -131,7 +141,6 @@ bool Image::load(std::string imagePath) {
     }
 
     file.close();
-    std::cout << "Image loaded successfully" << std::endl;
     return true;
 }
 
@@ -139,9 +148,46 @@ bool Image::load(std::string imagePath) {
 // // Return true if the image was saved successfully
 // // Return false if the image could not be saved
 // // The image format is determined by the file extension
-// bool Image::save(std::string imagePath) const {
-//     return false;
-// }
+bool Image::save(std::string imagePath) const {
+    std::string extension = imagePath.substr(imagePath.length() - EXTENTION_LENGTH);
+    if (extension != PGM_EXT) {
+        std::cerr << "Error: Invalid file extension!" << std::endl;
+        std::cerr << "Got: " << extension << " Expected: " << PGM_EXT << std::endl;
+        return false;
+    }
+
+    std::ofstream file(imagePath, std::ios::app);
+    if (!file.is_open()) {
+        std::cerr << "Error opening the file!" << std::endl;
+        std::cerr << "The file may not exists or the path is invalid" << std::endl;
+        std::cerr << "Please check the path and try again" << std::endl;
+        std::cerr << "The path: " << imagePath << std::endl;
+        return false;
+    }
+
+    // Write the magic number
+    file << MAGIC_NUMBER << std::endl;
+
+    // Write a dummy comment
+    file << "# Image: " << imagePath << "  saved" << std::endl;
+
+    // Write the size of the image
+    file << m_size.width() << " " << m_size.height() << std::endl;
+
+    // Write the maximum value of the image
+    file << MAX_CHAR << std::endl;
+
+    // Write the data
+    for (uint i = 0; i < m_size.height(); i++) {
+        for (uint j = 0; j < m_size.width(); j++) {
+            file << static_cast<int>(m_data[i][j]) << " ";
+        }
+        file << std::endl;
+    }
+    std::cout << "Image saved successfully!" << std::endl;
+    file.close();
+    return false;
+}
 
 
 // // Pixel-wise addition of two images
@@ -310,5 +356,5 @@ Image Image::zeros(unsigned int width, unsigned int height) {
 // Create an image filled with ones
 // Using the static fill_data method
 Image Image::ones(unsigned int width, unsigned int height) {
-    return Image::fill_data(Size(width, height), 1);
+    return Image::fill_data(Size(width, height), MAX_CHAR);
 }
