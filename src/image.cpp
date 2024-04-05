@@ -96,8 +96,9 @@ Image &Image::operator=(const Image &other) {
 // bool Image::save(std::string imagePath) const {
 //     return false;
 // }
-//
-// // Pixel-wise addition and subtraction of two images
+
+
+// // Pixel-wise addition of two images
 // // The two images must have the same size otherwise the operation will fail
 // // (exception thrown)
 Image Image::operator+(const Image &other) {
@@ -113,6 +114,9 @@ Image Image::operator+(const Image &other) {
     return result;
 }
 
+// Pixel-wise subtraction of two images
+// The two images must have the same size otherwise the operation will fail
+// (exception thrown)
 Image Image::operator-(const Image &other) {
     if(m_size != other.size()) {
         throw std::invalid_argument("The two images must have the same size");
@@ -126,6 +130,9 @@ Image Image::operator-(const Image &other) {
     return result;
 }
 
+// Scalar multiplication of a pixel
+// Multiply each pixel value by a scalar value
+// Return the result as a new image
 Image Image::operator*(double s) {
     Image result = Image(m_size);
     for(uint i = 0; i < m_size.height(); i++) {
@@ -135,19 +142,56 @@ Image Image::operator*(double s) {
     }
     return result;
 }
-//
-// bool Image::getROI(Image &roiImg, Rectangle roiRect) {
-//     // TODO
-//     return false;
-// }
-// // maybe not
-// bool Image::getROI(Image &roiImg, unsigned int x, unsigned int y, unsigned int width, unsigned int height) {
-//     // TODO
-//     return false;
-// }
+
+// Get a region of interest (ROI) from the image
+// Return true if the ROI was successfully extracted
+// Return false if the ROI is invalid
+// The ROI is invalid when the size of the ROI is 0 or greater than the size of the image
+// also when the top left corner of the ROI is outside the image
+bool Image::getROI(Image &roiImg, Rectangle roiRect) {
+    // TODO test the function
+    if (roiRect.size().area() == 0 || roiRect.size().area() > m_size.area()) {
+        return false;
+    }
+    if (roiRect.size().width() > m_size.width() || roiRect.size().height() > m_size.height()){
+        return false;
+    }
+
+    roiImg.m_size = roiRect.size();
+    for(uint i = 0; i < roiImg.size().height(); i++) {
+        roiImg.m_data[i] = new unsigned char[roiImg.size().area()];
+    }
+    for(uint i = 0; i < roiImg.size().height(); i++) {
+        for(uint j = 0; j < roiImg.size().width(); j++) {
+            roiImg.at(i, j) = at(roiRect.topLeft().x() + i, roiRect.topLeft().y() + j);
+        }
+    }
+    return true;
+}
+
+// maybe not
+// Literally the same thing as the previous function
+// Just the input is in a different format
+bool Image::getROI(Image &roiImg, unsigned int x, unsigned int y, unsigned int width, unsigned int height) {
+    if (width == 0 || height == 0 || width > m_size.width() || height > m_size.height()) {
+        return false;
+    }
+    if (x + width > m_size.width() || y + height > m_size.height()) {
+        return false;
+    }
+    roiImg.m_size = Size(width, height);
+    for(uint i = 0; i < roiImg.size().height(); i++) {
+        roiImg.m_data[i] = new unsigned char[roiImg.size().area()];
+    }
+    for(uint i = 0; i < roiImg.size().height(); i++) {
+        for(uint j = 0; j < roiImg.size().width(); j++) {
+            roiImg.at(i, j) = at(x + i, y + j);
+        }
+    }
+    return false;
+}
 
 // Check if the image is empty
-// Return true if the image is empty
 bool Image::isEmpty() const {
     return m_size.area() == 0 || m_data[0] == nullptr;
 }
