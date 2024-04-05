@@ -1,5 +1,9 @@
 #include "../include/image.h"
 #include <cstring>
+#include <fstream>
+#include <limits>
+
+#define MAGIC_NUMBER "P2"
 
 // Default constructor
 // Initialize the image with an empty size
@@ -38,7 +42,7 @@ void Image::release() {
     // Release the memory
     for (unsigned int i = 0; i < m_size.height(); i++) {
         delete[] m_data[i];
-        // m_data[i] = nullptr;
+        m_data[i] = nullptr;
     }
 }
 
@@ -82,13 +86,55 @@ Image &Image::operator=(const Image &other) {
     return *this;
 }
 
-// // Load an image from a file
-// // Return true if the image was loaded successfully
-// // Return false if the image could not be loaded
-// bool Image::load(std::string imagePath) {
-//     return false;
-// }
-//
+// Load an image from a file
+// Return true if the image was loaded successfully
+// Return false if the image could not be loaded
+bool Image::load(std::string imagePath) {
+    std::ifstream file(imagePath);
+    if (!file.is_open()) {
+        std::cerr << "Error opening the file!" << std::endl;
+        return false;
+    }
+
+    // Get the first line that must contain magic number
+    std::string magicNumber;
+    std::getline(file, magicNumber);
+    if (magicNumber != MAGIC_NUMBER) {
+        std::cerr << "Error: Invalid magic number!" << std::endl;
+        return false;
+    }
+
+    // Ignore comments
+    while (file.peek() == '#') {
+        file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+
+    // Get the size of the image
+    uint width, height;
+    file >> width >> height;
+
+    // Get the maximum value of the image
+    uint maxVal;
+    file >> maxVal;
+    m_size = Size(width, height);
+
+    // Check for comments
+    m_data = new unsigned char *[width];
+    for (uint i = 0; i < width; i++) {
+        m_data[i] = new unsigned char [height];
+        for (uint j = 0; j < height; j++) {
+            // convert the value to an unsigned char
+            uint d;
+            file >> d;
+            m_data[i][j] = d;
+        }
+    }
+
+    file.close();
+    std::cout << "Image loaded successfully" << std::endl;
+    return true;
+}
+
 // // Save the image to a file
 // // Return true if the image was saved successfully
 // // Return false if the image could not be saved

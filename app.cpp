@@ -5,10 +5,13 @@
 
 int main() {
     Image img = Image();
+    // std::cout << img;
+    // img = Image::ones(10, 10);
+    // std::cout << img;
+    // img = img * 3;
+    // std:: cout << img;
+    bool a = img.load("./samples/load/small.pgm");
+    std::cout << a << std::endl;
     std::cout << img;
-    img = Image::ones(10, 10);
-    std::cout << img;
-    img = img * 3;
-    std:: cout << img;
     return 0;
 }
