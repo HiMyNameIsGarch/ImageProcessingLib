@@ -45,7 +45,7 @@ public:
     Size size() const { return m_size; };
 
     // Acces or modify a pixel value at a specific location
-    unsigned char& at(unsigned int x, unsigned int y);
+    unsigned char& at(unsigned int x, unsigned int y) const;
     unsigned char& at(Point pt);
 
     // Returns a pointer to the beginning of a specified row in the image data
@@ -62,6 +62,10 @@ public:
     // Create an image filled with zeros or ones
     static Image zeros(unsigned int width, unsigned int height);
     static Image ones(unsigned int width, unsigned int height);
+
+
+    // Set pixel
+    void setPixel(unsigned int x, unsigned int y, unsigned char value);
 
 };
 #endif

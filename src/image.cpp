@@ -229,7 +229,12 @@ Image Image::operator*(double s) {
     Image result = Image(m_size);
     for(uint i = 0; i < m_size.height(); i++) {
         for(uint j = 0; j < m_size.width(); j++) {
-            result.at(i, j) = static_cast<unsigned char>(m_data[i][j] * s);
+            uint n = m_data[i][j];
+            n*=s;
+            if (n > MAX_CHAR) {
+                n = MAX_CHAR;
+            }
+            result.at(i, j) = static_cast<unsigned char>(n);
         }
     }
     return result;
@@ -293,7 +298,7 @@ unsigned char &Image::at(Point pt) {
     return m_data[pt.x()][pt.y()];
 }
 // maybe not
-unsigned char &Image::at(unsigned int x, unsigned int y) {
+unsigned char &Image::at(unsigned int x, unsigned int y) const {
     return m_data[x][y];
 }
 
@@ -357,4 +362,9 @@ Image Image::zeros(unsigned int width, unsigned int height) {
 // Using the static fill_data method
 Image Image::ones(unsigned int width, unsigned int height) {
     return Image::fill_data(Size(width, height), MAX_CHAR);
+}
+
+// Set pixel
+void Image::setPixel(unsigned int x, unsigned int y, unsigned char value) {
+    m_data[x][y] = value;
 }
