@@ -1,3 +1,4 @@
+#include "include/imageProcessing/convolution.h"
 #include "include/imageProcessing/gammaCorrection.h"
 #include "include/rectangle.h"
 #include "include/point.h"
@@ -13,7 +14,7 @@ int main() {
     // img = img * 3;
     // std:: cout << img;
     img.load("./samples/load/barbara.ascii.pgm");
-    GammaCorrection g = GammaCorrection(1.5);
+    Convolution g = Convolution(nullptr);
     Image dst = Image(img.size());
     g.process(img, dst);
     dst.save("./samples/saved/barbara.ascii.pgm");
