@@ -1,9 +1,9 @@
 #include "../include/size.h"
 
 Size::Size() {
-    m_width = 1;
-    m_height = 1;
-    m_area = 1;
+    m_width = 0;
+    m_height = 0;
+    m_area = 0;
 }
 Size::Size(uint width, uint height) {
     m_width = width;

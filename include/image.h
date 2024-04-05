@@ -9,6 +9,7 @@ class Image {
 private:
     unsigned char** m_data;
     Size m_size;
+    static Image fill_data(const Size &size, unsigned char value);
 
 public:
     Image();

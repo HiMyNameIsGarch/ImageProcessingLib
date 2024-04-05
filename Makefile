@@ -38,7 +38,7 @@ all: $(EXECUTABLE) run
 # Build the executable
 $(EXECUTABLE): $(SRC_FILES)
 	@mkdir -p $(BUILD_DIR) # Make sure the build directory exists
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(MAIN)
+	@$(CXX) $(CXXFLAGS) -o $@ $^ $(MAIN)
 
 # Debug the executable
 debug: $(EXECUTABLE)
