@@ -16,7 +16,7 @@
 
 # Compiler flags
 CXX = clang++
-CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude -Werror -Wpedantic -g
+CXXFLAGS = -std=c++20 -Wall -Wextra -I$(INCLUDE_DIR) -Werror -Wpedantic -g
 
 # Directories
 SRC_DIR = src
@@ -28,7 +28,7 @@ DEBUG_DIR = debug
 SRC_FILES := $(shell find $(SRC_DIR) -type f -name '*.cpp')
 INCLUDE_DIRS := $(shell find $(INCLUDE_DIR) -type d)
 
-MAIN := ./main.cpp
+MAIN := ./app.cpp
 EXECUTABLE = $(BUILD_DIR)/process_image
 
 .PHONY: all clean debug run
@@ -38,7 +38,7 @@ all: $(EXECUTABLE) run
 # Build the executable
 $(EXECUTABLE): $(SRC_FILES)
 	@mkdir -p $(BUILD_DIR) # Make sure the build directory exists
-	@$(CXX) $(CXXFLAGS) -o $@ $^ $(MAIN)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(MAIN)
 
 # Debug the executable
 debug: $(EXECUTABLE)
