@@ -16,13 +16,26 @@ Image::Image() {
     m_size = Size();
     m_data = nullptr;
 }
-// Constructor with a size
+
+// Constructor with width and height
+// Just init the whole array
+// and allocate memory for the data
+Image::Image(unsigned int width, unsigned int height) {
+    m_size = Size(width, height);
+    m_data = new unsigned char *[height];
+    for (unsigned int i = 0; i < height; ++i) {
+        m_data[i] = new unsigned char[width];
+    }
+}
+
+
+// Constructor with a size ( same as the upper constructor )
 // Initialize the image with the specified size
 // and allocate memory for the data
 Image::Image(const Size &size) {
     m_size = size;
     m_data = new unsigned char *[size.height()];
-    for (unsigned int i = 0; i < size.height(); i++) {
+    for (unsigned int i = 0; i < size.height(); ++i) {
         m_data[i] = new unsigned char[size.width()];
     }
 }
@@ -32,9 +45,13 @@ Image::Image(const Size &size) {
 // Allocate memory for the data and copy the data
 // from the other image
 Image::Image(const Image &other) {
+    if (m_size != other.m_size) // if the size is different release the memory
+        this->release();
     m_size = other.m_size;
-    for(uint i = 0; i<m_size.height(); i++) {
-        for(uint j = 0; j<m_size.width(); j++) {
+    m_data = new unsigned char *[m_size.height()];
+    for(uint i = 0; i < m_size.height(); ++i) {
+        m_data[i] = new unsigned char[m_size.width()];
+        for(uint j = 0; j < m_size.width(); ++j) {
             m_data[i][j] = other.m_data[i][j];
         }
     }
@@ -44,10 +61,13 @@ Image::Image(const Image &other) {
 // Deallocate the memory for the data
 void Image::release() {
     // Release the memory
-    for (unsigned int i = 0; i < m_size.height(); i++) {
-        delete[] m_data[i];
-        m_data[i] = nullptr;
+    if(this->isEmpty()) {
+        return;
     }
+    for (unsigned int i = 0; i < m_size.height(); ++i) {
+            delete[] m_data[i];
+    }
+    delete [] m_data;
 }
 
 // Destructor
@@ -61,31 +81,14 @@ Image &Image::operator=(const Image &other) {
     if(this == &other) {
         return *this;
     }
-    if(this->isEmpty()) {
-        m_size = other.m_size;
-        m_data = new unsigned char *[m_size.height()];
-        for (unsigned int i = 0; i < m_size.height(); i++) {
-            m_data[i] = new unsigned char[m_size.width()];
-        }
-    }
-    if (this != &other) {
-        // some bug in this code when the size of the two images are different
-        // TODO
-        if((*this).size().area() != other.size().area()) {
-            release();
-            m_size = other.m_size;
-            m_data = new unsigned char *[m_size.height()];
-            for (unsigned int i = 0; i < m_size.height(); i++) {
-                m_data[i] = new unsigned char[m_size.width()];
-            }
-        } else {
-            m_size = other.m_size;
-            for (uint i = 0; i < m_size.height(); i++) {
-                delete[] this->m_data[i];
-                this->m_data[i] = new unsigned char[other.size().area()];
-                memcpy(this->m_data[i], other.m_data[i], static_cast<size_t>(other.size().area()));
-            }
-        }
+    release();
+
+    m_size = other.m_size;
+
+    m_data = new unsigned char *[m_size.height()];
+    for(uint i = 0; i < m_size.height(); ++i) {
+        m_data[i] = new unsigned char[m_size.width()];
+        memcpy(m_data[i], other.m_data[i], m_size.width() * sizeof(unsigned char));
     }
     return *this;
 }
@@ -129,13 +132,16 @@ bool Image::load(std::string imagePath) {
     m_size = Size(width, height);
 
     // Check for comments
-    m_data = new unsigned char *[width];
-    for (uint i = 0; i < width; i++) {
-        m_data[i] = new unsigned char [height];
-        for (uint j = 0; j < height; j++) {
+    m_data = new unsigned char *[height];
+    for (uint i = 0; i < height; i++) {
+        m_data[i] = new unsigned char [width];
+        for (uint j = 0; j < width; j++) {
             // convert the value to an unsigned char
             uint d;
             file >> d;
+            if(d > maxVal) {
+                d = maxVal;
+            }
             m_data[i][j] = d;
         }
     }
@@ -186,7 +192,7 @@ bool Image::save(std::string imagePath) const {
     }
     std::cout << "Image saved successfully!" << std::endl;
     file.close();
-    return false;
+    return true;
 }
 
 
@@ -200,7 +206,11 @@ Image Image::operator+(const Image &other) {
     Image result = Image(m_size);
     for(uint i = 0; i < m_size.height(); i++) {
         for(uint j = 0; j < m_size.width(); j++) {
-            result.at(i, j) = m_data[i][j] + other.m_data[i][j];
+            uint op = m_data[i][j] + other.m_data[i][j];
+            if (op > MAX_CHAR) {
+                op = MAX_CHAR;
+            }
+            result.at(i, j) = op;
         }
     }
     return result;
@@ -216,7 +226,10 @@ Image Image::operator-(const Image &other) {
     Image result = Image(m_size);
     for(uint i = 0; i < m_size.height(); i++) {
         for(uint j = 0; j < m_size.width(); j++) {
-            result.at(i, j) = m_data[i][j] - other.m_data[i][j];
+            uint op =  m_data[i][j] - other.m_data[i][j];
+            if (op < 0)
+                op = 0;
+            result.at(i, j) = op;
         }
     }
     return result;
@@ -230,7 +243,7 @@ Image Image::operator*(double s) {
     for(uint i = 0; i < m_size.height(); i++) {
         for(uint j = 0; j < m_size.width(); j++) {
             uint n = m_data[i][j];
-            n*=s;
+            n *= s;
             if (n > MAX_CHAR) {
                 n = MAX_CHAR;
             }
@@ -290,7 +303,7 @@ bool Image::getROI(Image &roiImg, unsigned int x, unsigned int y, unsigned int w
 
 // Check if the image is empty
 bool Image::isEmpty() const {
-    return m_size.area() == 0 || m_data[0] == nullptr;
+    return m_size.area() == 0 || m_data == nullptr;
 }
 
 // Access a pixel value at a specific location using a Point object
@@ -310,15 +323,18 @@ unsigned char *Image::row(int y) {
 // Overload the stream operators
 // Print the image size and the data
 std::ostream &operator<<(std::ostream &os, const Image &dt) {
+    // TODO
+    // Check valgrind for errors
     if(dt.isEmpty()) {
-        os << "Empty image\n";
+        os << "Empty image" << std::endl;
         return os;
     }
-    os << "Image(" << dt.m_size.width() << ", " << dt.m_size.height() << ")\n" ;
-    for(uint i = 0; i < dt.m_size.height(); i++) {
-        for(uint j = 0; j<dt.m_size.width(); j++) {
+    os << "Image(" << dt.m_size.width() << ", " << dt.m_size.height() << ")" << std::endl;
+    for(uint i = 0; i < dt.m_size.height(); ++i) {
+        for(uint j = 0; j < dt.m_size.width(); ++j) {
             uint n = dt.m_data[i][j];
-            os << n << " ";
+            if(n)
+                os << n << " ";
         }
         os << std::endl;
     }
@@ -346,7 +362,7 @@ Image Image::fill_data(const Size &size, unsigned char value) {
     Image img = Image(size);
     for (unsigned int i = 0; i < size.height(); i++) {
         for (unsigned int j = 0; j < size.width(); j++) {
-            img.at(j, i) = value;
+            img.at(i, j) = value;
         }
     }
     return img;

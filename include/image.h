@@ -14,6 +14,7 @@ private:
 public:
     Image();
     Image(const Size &size);
+    Image(unsigned int width, unsigned int height);
 
     // Rule of three
     Image(const Image &other);

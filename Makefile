@@ -23,6 +23,9 @@ SRC_DIR = src
 INCLUDE_DIR = include
 BUILD_DIR = build
 DEBUG_DIR = debug
+SAMPLES_DIR = samples
+SAMPLES_SAVED_DIR = $(SAMPLES_DIR)/saved
+SAMPLES_LOADED_DIR = $(SAMPLES_DIR)/loaded
 
 # Files and include directories
 SRC_FILES := $(shell find $(SRC_DIR) -type f -name '*.cpp')
@@ -33,12 +36,13 @@ EXECUTABLE = $(BUILD_DIR)/process_image
 
 .PHONY: all clean debug run
 
-all: $(EXECUTABLE) run
+all: clean $(EXECUTABLE) run
 
 # Build the executable
 $(EXECUTABLE): $(SRC_FILES)
 	@mkdir -p $(BUILD_DIR) # Make sure the build directory exists
-	@$(CXX) $(CXXFLAGS) -o $@ $^ $(MAIN)
+	@echo "Building executable..."
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(MAIN) && echo "Executable built successfully!" || echo "Failed to build executable!"
 
 # Debug the executable
 debug: $(EXECUTABLE)
@@ -59,6 +63,6 @@ help:
 	@echo "Usage: make [all|clean|debug|run|help]"
 	@echo "	all: Builds the executable and runs it"
 	@echo "	clean: Cleans the build and debug directories"
-	@echo "	debug: Builds the executable and runs it with valgrind"
+	@echo "	debug: Builds the executable and runs it with valgrind to check for memory leaks"
 	@echo "	run: Runs the executable from $(EXECUTABLE)"
 	@echo "	help: Displays this message"
