@@ -27,7 +27,13 @@ void Brightness::process(const Image &src, Image &dst) {
     }
     for (uint i = 0; i < src.size().width(); i++) {
         for (uint j = 0; j < src.size().height(); j++) {
-            dst.at(i, j) = m_alpha * src.at(i, j) + m_bias;
+            uint op = m_alpha * src.at(i,j) + m_bias;
+            if(op > 255)
+                op = 255;
+            else if (op < 0) {
+                op = 0;
+            }
+            dst.at(i, j) = op;
         }
     }
 }
