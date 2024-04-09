@@ -17,7 +17,13 @@ void GammaCorrection::process(const Image &src, Image &dst) {
     }
     for (uint i = 0; i < src.size().width(); i++) {
         for (uint j = 0; j < src.size().height(); j++) {
-            dst.at(i, j) = pow(src.at(i, j), m_gamma);
+            uint val = pow(src.at(i, j), m_gamma);
+            if(val > 255) {
+                val = 255;
+            } else if (val < 0) {
+                val = 0;
+            }
+            dst.at(i, j) = val;
         }
     }
 }

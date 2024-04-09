@@ -81,13 +81,15 @@ Image &Image::operator=(const Image &other) {
     if(this == &other) {
         return *this;
     }
+    // Release the memory
     release();
-
     m_size = other.m_size;
 
+    // Allocate memory for the data
     m_data = new unsigned char *[m_size.height()];
     for(uint i = 0; i < m_size.height(); ++i) {
         m_data[i] = new unsigned char[m_size.width()];
+        // Copy the data
         memcpy(m_data[i], other.m_data[i], m_size.width() * sizeof(unsigned char));
     }
     return *this;
@@ -316,7 +318,7 @@ unsigned char &Image::at(unsigned int x, unsigned int y) const {
 }
 
 // Get the whole row of the image
-unsigned char *Image::row(int y) {
+unsigned char *Image::row(int y) const {
     return m_data[y];
 }
 
@@ -347,8 +349,8 @@ std::istream &operator>>(std::istream &is, Image &dt) {
     is >> width >> height;
     dt.m_size.setWidth(width);
     dt.m_size.setHeight(height);
-    for(uint i = 0; i < dt.m_size.height(); i++) {
-        for(uint j = 0; j<dt.m_size.width(); j++) {
+    for(uint i = 0; i < dt.m_size.height(); ++i) {
+        for(uint j = 0; j<dt.m_size.width(); ++j) {
             is >> dt.m_data[i][j];
         }
     }
@@ -378,9 +380,4 @@ Image Image::zeros(unsigned int width, unsigned int height) {
 // Using the static fill_data method
 Image Image::ones(unsigned int width, unsigned int height) {
     return Image::fill_data(Size(width, height), MAX_CHAR);
-}
-
-// Set pixel
-void Image::setPixel(unsigned int x, unsigned int y, unsigned char value) {
-    m_data[x][y] = value;
 }

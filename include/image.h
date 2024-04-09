@@ -51,7 +51,7 @@ public:
 
     // Returns a pointer to the beginning of a specified row in the image data
     // Can be used for row-wise operations
-    unsigned char* row(int y);
+    unsigned char* row(int y) const;
 
     void release();
 
@@ -63,10 +63,5 @@ public:
     // Create an image filled with zeros or ones
     static Image zeros(unsigned int width, unsigned int height);
     static Image ones(unsigned int width, unsigned int height);
-
-
-    // Set pixel
-    void setPixel(unsigned int x, unsigned int y, unsigned char value);
-
 };
 #endif
