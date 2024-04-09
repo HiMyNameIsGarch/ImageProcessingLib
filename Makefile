@@ -57,7 +57,7 @@ run: $(EXECUTABLE)
 
 # Clean the build and debug directories
 clean:
-	rm -rf $(BUILD_DIR)/* $(DEBUG_DIR)/*
+	rm -rf $(BUILD_DIR)/* $(DEBUG_DIR)/* $(SAMPLES_SAVED_DIR)/*
 
 help:
 	@echo "Usage: make [all|clean|debug|run|help]"

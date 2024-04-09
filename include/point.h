@@ -5,20 +5,20 @@
 class Point {
 
 private:
-    int m_x;
-    int m_y;
+    unsigned int m_x;
+    unsigned int m_y;
 
 public:
     Point(); // Init point at (0,0)
-    Point(int x, int y);
+    Point(unsigned int x, unsigned int y);
 
     // Getters
-    int x() const { return m_x; };
-    int y() const { return m_y; };
+    unsigned int x() const { return m_x; };
+    unsigned int y() const { return m_y; };
 
     // Setters
-    void setX(int x);
-    void setY(int y);
+    void setX(unsigned int x);
+    void setY(unsigned int y);
 };
 
 #endif
