@@ -4,16 +4,12 @@
 
 #include "imageProcessing.h"
 #include <array>
+#include "kernel_type.h"
 
 constexpr size_t K_ROWS = 3;
 constexpr size_t K_COLS = 3;
-constexpr int INVALID_KERNEL = 420;
 
-constexpr short MAX_OPT = 5;
-
-using ScaleKernel = void(*)(short opt);
-
-using Matrix = const std::array<std::array<const int, K_COLS>, K_ROWS>;
+using Matrix = std::array<std::array<const int, K_COLS>, K_ROWS>;
 
 class Convolution : public ImageProcessing {
 
@@ -44,23 +40,13 @@ private:
         {-1, 0, 1}
     }};
 
-    ScaleKernel m_scaler;
-
-    void apply_scale(Image &kernel, const Matrix m);
-
-    double at(short opt, int i, int j);
-
-    void kernel_scaler(short opt);
-
-    short scaler_opt;
+    double at(int i, int j) const;
+    KernelType m_kernelOpt;
 
 public:
-    Convolution(ScaleKernel scaler);
+    Convolution(KernelType kernelOpt);
 
     void process(const Image &src, Image &dst) override;
-
-    void set_scaler(short opt);
-
 };
 
 #endif
