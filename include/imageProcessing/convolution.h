@@ -48,7 +48,7 @@ private:
 
     void apply_scale(Image &kernel, const Matrix m);
 
-    int at(short opt, int i, int j);
+    double at(short opt, int i, int j);
 
     void kernel_scaler(short opt);
 

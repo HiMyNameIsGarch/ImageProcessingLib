@@ -3,21 +3,24 @@
 Convolution::Convolution(ScaleKernel scaler) :
     m_scaler(scaler) {}
 
-int Convolution::at(short opt, int i, int j) {
+double Convolution::at(short opt, int i, int j) {
     if(opt == 1) {
         return Convolution::IDENTITY_KERNEL[i][j];
     }
     if(opt == 2) {
-        return Convolution::MEAN_BLUR_KERNEL[i][j];
+        return 1/9.0 * Convolution::MEAN_BLUR_KERNEL[i][j];
     }
     if(opt == 3) {
-        return Convolution::GAUSSIAN_BLUR_KERNEL[i][j];
+        return 1/16.0 * Convolution::GAUSSIAN_BLUR_KERNEL[i][j];
     }
     if(opt == 4) {
         return Convolution::HORIZONTAL_SOBEL_KERNEL[i][j];
     }
     if(opt == 5) {
         return Convolution::VERTICAL_SOBEL_KERNEL[i][j];
+    }
+    if(opt == 6) {
+        return Convolution::MEAN_BLUR_KERNEL[i][j];
     }
     std::cerr << "Error: Invalid option." << std::endl;
     return INVALID_KERNEL;
@@ -63,12 +66,12 @@ void Convolution::process(const Image &src, Image &dst) {
     uint ca[3][3];
     for (uint i = 0; i < src.size().height(); i++) {
         for (uint j = 0; j < src.size().width(); j++) {
-            uint center = src.at(i, j);
-            int sum = 0;
-            ca[1][1] = center;
             uint w = src.size().width() - 1;
             uint h = src.size().height() - 1;
-            // mindfuckery ifs
+
+            uint center = src.at(i, j);
+            ca[1][1] = center;
+            // // mindfuckery ifs
             if (i == 0) { // up
                 ca[0][1] = center;
             } else { //
@@ -128,7 +131,25 @@ void Convolution::process(const Image &src, Image &dst) {
             else
                 ca[2][2] = src.at(i+1, j+1);
 
-            dst.at(i,j) = sum;
+
+
+            double sum = 0;
+            for(uint a = 0; a < K_ROWS; a++) {
+                for(uint b = 0; b < K_COLS; b++) {
+                    double conv = Convolution::at(6, a, b);
+                    double m = ca[a][b];
+                    double product = m * conv;
+                    sum += product;
+                }
+            }
+            if(sum < 0)
+                sum = 0;
+
+            if (sum > 255)
+                sum = 255;
+
+            dst.at(i,j) = (uint)sum;
+
         }
-    }
+}
 }
