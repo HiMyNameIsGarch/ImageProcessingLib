@@ -35,8 +35,10 @@ The sample image is the following: </br>
 # Image Processing
 
 ## Brightness
-The brightness operation increases or decreases the brightness of an image. The operation takes an
+The brightness operation increases or decreases the brightness of an image.
+
 #### Brightness correction (value: 1 with 35)
+
 <div style="display: flex;">
     <div style="width: 50%; text-align: center;">
         <p>Before</p>
@@ -49,8 +51,10 @@ The brightness operation increases or decreases the brightness of an image. The 
 </div>
 
 ## Gamma correction
-The gamma correction operation adjusts the brightness of an image by using a gamma value. The gamma value is a floating-point value that is greater than 0. The gamma correction operation is defined as follows:
+The gamma correction operation adjusts the brightness of an image by using a gamma value. The gamma value is a floating-point value that is greater than 0.
+
 #### Dark gamma correction (value: 0.65)
+
 <div style="display: flex;">
     <div style="width: 50%; text-align: center;">
         <p>Before</p>
@@ -61,7 +65,9 @@ The gamma correction operation adjusts the brightness of an image by using a gam
         <img src="https://github.com/HiMyNameIsGarch/ImageProcessingLib/blob/convolution/samples/saved/sample-gamma-light.png" style="width: 30%;">
     </div>
 </div>
+
 #### Light gamma correction (value: 1.35)
+
 <div style="display: flex;">
     <div style="width: 50%; text-align: center;">
         <p>Before</p>
