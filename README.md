@@ -39,11 +39,11 @@ The brightness operation increases or decreases the brightness of an image. The 
 <div style="display: flex;">
     <div style="width: 50%; text-align: center;">
         <p>Before</p>
-        <img src="https://github.com/HiMyNameIsGarch/ImageProcessingLib/blob/convolution/samples/load/sample.png" style="width: 70%;">
+        <img src="https://github.com/HiMyNameIsGarch/ImageProcessingLib/blob/convolution/samples/load/sample.png" style="width: 30%;">
     </div>
     <div style="width: 50%; text-align: center;">
         <p>After</p>
-        <img src="https://github.com/HiMyNameIsGarch/ImageProcessingLib/blob/convolution/samples/saved/sample-brightness.png" style="width: 70%;">
+        <img src="https://github.com/HiMyNameIsGarch/ImageProcessingLib/blob/convolution/samples/saved/sample-brightness.png" style="width: 30%;">
     </div>
 </div>
 
