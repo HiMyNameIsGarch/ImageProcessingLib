@@ -270,8 +270,9 @@ bool Image::getROI(Image &roiImg, Rectangle roiRect) {
     }
 
     roiImg.m_size = roiRect.size();
+    roiImg.m_data = new unsigned char*[roiImg.size().height()];
     for(uint i = 0; i < roiImg.size().height(); i++) {
-        roiImg.m_data[i] = new unsigned char[roiImg.size().area()];
+        roiImg.m_data[i] = new unsigned char[roiImg.size().width()];
     }
     for(uint i = 0; i < roiImg.size().height(); i++) {
         for(uint j = 0; j < roiImg.size().width(); j++) {
@@ -292,8 +293,9 @@ bool Image::getROI(Image &roiImg, unsigned int x, unsigned int y, unsigned int w
         return false;
     }
     roiImg.m_size = Size(width, height);
+    roiImg.m_data = new unsigned char*[roiImg.size().height()];
     for(uint i = 0; i < roiImg.size().height(); i++) {
-        roiImg.m_data[i] = new unsigned char[roiImg.size().area()];
+        roiImg.m_data[i] = new unsigned char[roiImg.size().width()];
     }
     for(uint i = 0; i < roiImg.size().height(); i++) {
         for(uint j = 0; j < roiImg.size().width(); j++) {
@@ -362,8 +364,8 @@ std::istream &operator>>(std::istream &is, Image &dt) {
 // The image is allocated on the heap
 Image Image::fill_data(const Size &size, unsigned char value) {
     Image img = Image(size);
-    for (unsigned int i = 0; i < size.height(); i++) {
-        for (unsigned int j = 0; j < size.width(); j++) {
+    for (unsigned int i = 0; i < size.height(); ++i) {
+        for (unsigned int j = 0; j < size.width(); ++j) {
             img.at(i, j) = value;
         }
     }
