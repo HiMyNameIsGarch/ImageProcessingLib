@@ -167,3 +167,45 @@ function that converts the range [-4*255, 4*255] to the range
         <img src="https://github.com/HiMyNameIsGarch/ImageProcessingLib/blob/convolution/samples/saved/sample-vertical-sobel.png" style="width: 30%;">
     </div>
 </div>
+
+### Tehnical Part
+---
+About memory leaks. I have used Valgrind to check for memory leaks by running
+make debug. As I have tested, no memory leaks were found.
+
+---
+The project was built using CMake. To build the project, you need to have CMake installed on your machine. To build the project, you need to run the following commands:
+```
+# to compile and run the project
+> make
+
+# to clean the project
+> make clean
+
+# to run valgrind on the project
+> make debug
+
+# to run the project without compiling it
+> make run
+
+# to see the available commands
+> make help
+```
+
+---
+As I am running the project on a Linux machine, I have used the following programs to convert and visualize the images:
+```
+> feh # to visualize the images
+> convert # to convert the images ( from imagethick binary )
+
+# To install the programs, you can run the following commands depending on your distribution:
+
+# For Arch:
+> sudo pacman -S imagemagick feh
+
+# For Ubuntu:
+> sudo apt-get install imagemagick feh
+
+# Now to convert the images from PGM to PNG you can run the following command:
+> find ./samples/saved/ -type f -name "*.pgm" | sed 's/.pgm$//' | xargs -I {} convert {}.pgm {}.png
+```
