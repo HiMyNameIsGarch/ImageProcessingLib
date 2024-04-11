@@ -13,7 +13,7 @@
 
 # What can the library do?
 #### The library can perform the following operations:
-<forum style="font-size:18px; color: #E78587">
+<p style="font-size:18px; color: #E78587">
  - Apply different filters (e.g., mean blur, Gaussian blur, box blur, horizontal Sobel, vertical Sobel). </br>
  - Adjust the brightness</br>
  - Apply gamma correction</br>
@@ -21,23 +21,24 @@
  - Extract a Region Of Interest</br>
  - Return the intersection of 2 rectangles.</br>
  - Return the union of 2 rectangles.</br>
-</forum>
+</p>
 
 
 # Testes images
 The project will be tested using the following images:
 The images are not mine, they were taken from the following link: https://people.sc.fsu.edu/~jburkardt/data/pgma/pgma.html
 
-# Sample images
-The sample image is the following: </br>
-![Sample image](https://github.com/HiMyNameIsGarch/ImageProcessingLib/blob/convolution/samples/load/sample.png,)
-
 # Image Processing
 
 ## Brightness
 The brightness operation increases or decreases the brightness of an image.
 
-#### Brightness correction (value: 1 with 35)
+#### Brightness correction (gain: 1, bias: 35)
+The formula for the brightness correction is:
+```
+output = input * gain + bias
+```
+where `input` is the pixel value of the input image, `gain` is a floating-point value that is greater than 0, and `bias` is an integer value.
 
 <div style="display: flex;">
     <div style="width: 50%; text-align: center;">
@@ -53,7 +54,12 @@ The brightness operation increases or decreases the brightness of an image.
 ## Gamma correction
 The gamma correction operation adjusts the brightness of an image by using a gamma value. The gamma value is a floating-point value that is greater than 0.
 
-#### Dark gamma correction (value: 0.65)
+#### Dark gamma correction (gamma: 0.65)
+Where the formula for the gamma correction is:
+```
+output = pow(input, gamma)
+```
+where `input` is the pixel value of the input image, and `gamma` is a floating-point value that is greater or smaller than 0.
 
 <div style="display: flex;">
     <div style="width: 50%; text-align: center;">
@@ -66,7 +72,7 @@ The gamma correction operation adjusts the brightness of an image by using a gam
     </div>
 </div>
 
-#### Light gamma correction (value: 1.35)
+#### Light gamma correction (gamma: 1.35)
 
 <div style="display: flex;">
     <div style="width: 50%; text-align: center;">
@@ -80,11 +86,18 @@ The gamma correction operation adjusts the brightness of an image by using a gam
 </div>
 
 ## Convolution
+The convolution operation applies a kernel to an image.
+The kernel is hardcoded to be exactly 3x3.
+Nonetheless, the code can be easily modified to support any kernel size.
 
 ### Identiy
 The identity operation does not change the image.
 
 ### Mean blur
+The mean blur operation blurs an image by averaging the pixel values in the
+neighborhood of each pixel. (for this kernel, the scaling function should just
+multiply the convolution result to 1/9)
+
 <div style="display: flex;">
     <div style="width: 50%; text-align: center;">
         <p>Before</p>
@@ -97,6 +110,10 @@ The identity operation does not change the image.
 </div>
 
 ### Gaussian Blur
+Still a blurring kernel, but in this
+case, the central pixel of the kernel has a higher weight in the
+mean operation; for this kernel, the scaling function should
+just multiply the convolution result to 1/16.0)
 <div style="display: flex;">
     <div style="width: 50%; text-align: center;">
         <p>Before</p>
@@ -121,6 +138,9 @@ The identity operation does not change the image.
 </div>
 
 ### Horizontal Sobel
+Used to detect horizontal edges.
+In this case, the scaling function should be a linear mapping
+function that converts the range [-4*255, 4*255] to the range [0, 255]).
 <div style="display: flex;">
     <div style="width: 50%; text-align: center;">
         <p>Before</p>
@@ -133,6 +153,10 @@ The identity operation does not change the image.
 </div>
 
 ### Vertical Sobel
+Vertical Sobel kernel. Used to detect vertical edges. In this
+case, the scaling function should be a linear mapping
+function that converts the range [-4*255, 4*255] to the range
+[0, 255]).
 <div style="display: flex;">
     <div style="width: 50%; text-align: center;">
         <p>Before</p>
