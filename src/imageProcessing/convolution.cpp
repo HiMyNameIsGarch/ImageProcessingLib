@@ -125,13 +125,8 @@ void Convolution::process(const Image &src, Image &dst) {
                     sum += product;
                 }
             }
-            if(sum < 0)
-                sum = 0;
 
-            if (sum > 255)
-                sum = 255;
-
-            dst.at(i,j) = sum;
+            dst.at(i,j) = setPixel(sum);
         }
     }
 }

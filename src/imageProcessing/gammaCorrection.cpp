@@ -18,12 +18,7 @@ void GammaCorrection::process(const Image &src, Image &dst) {
     for (uint i = 0; i < src.size().width(); i++) {
         for (uint j = 0; j < src.size().height(); j++) {
             uint val = pow(src.at(i, j), m_gamma);
-            if(val > 255) {
-                val = 255;
-            } else if (val < 0) {
-                val = 0;
-            }
-            dst.at(i, j) = val;
+            dst.at(i, j) = setPixel(val);
         }
     }
 }
