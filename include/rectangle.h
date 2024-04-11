@@ -26,7 +26,9 @@ public:
     void operator+(const Point &point);
     void operator-(const Point &point);
 
+    // The intersection between 2 rectangles
     Rectangle operator&(const Rectangle &r1) const;
+    // The union between 2 rectangles
     Rectangle operator|(const Rectangle &rectangle) const;
 
 };
